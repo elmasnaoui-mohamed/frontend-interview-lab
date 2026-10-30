@@ -4,8 +4,8 @@ import remarkGfm from 'remark-gfm';
 import {
   ArrowLeft, ArrowRight, BarChart3, Bookmark, BookOpen, Brain, Check,
   CheckCircle2, ChevronDown, Circle, Clock3, Command, Flame, Focus,
-  Home, Layers3, Menu, Moon, NotebookPen, Play, RotateCcw, Search,
-  Settings2, Sparkles, Star, Sun, Target, Trophy, X,
+  Home, Layers3, Menu, NotebookPen, Play, RotateCcw, Search,
+  Settings2, Sparkles, Star, Target, Trophy, X,
 } from 'lucide-react';
 import { buildTopics, modules, plainText } from './content.js';
 
@@ -186,9 +186,7 @@ export default function App() {
   const [readerTopic, setReaderTopic] = useState(null);
   const [focusQueue, setFocusQueue] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [theme, setTheme] = useState(() => localStorage.getItem('interview-theme') || 'dark');
   const searchRef = useRef(null);
-  useEffect(() => { document.documentElement.dataset.theme = theme; localStorage.setItem('interview-theme', theme); }, [theme]);
   useEffect(() => {
     const handler = (event) => {
       if (event.key === '/' && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) { event.preventDefault(); setView('library'); setTimeout(() => document.querySelector('.search-box input')?.focus(), 50); }
@@ -204,7 +202,7 @@ export default function App() {
     <div className="app-shell">
       <Sidebar view={view} setView={setView} selectedModule={selectedModule} setSelectedModule={setSelectedModule} topics={topics} data={data} open={sidebarOpen} close={() => setSidebarOpen(false)} />
       {sidebarOpen && <button className="sidebar-backdrop" onClick={() => setSidebarOpen(false)} />}
-      <div className="main-shell"><header className="topbar"><button className="icon-button mobile-only" onClick={() => setSidebarOpen(true)}><Menu /></button><div className="topbar-title"><span>{view === 'dashboard' ? 'Good to see you' : 'Interview workspace'}</span><strong>{view === 'dashboard' ? 'Ready to sharpen your answers?' : modules.find((item) => item.id === selectedModule)?.label}</strong></div><div className="topbar-actions"><button className="quick-search" onClick={() => { setView('library'); setTimeout(() => document.querySelector('.search-box input')?.focus(), 50); }}><Search /><span>Quick search</span><kbd>/</kbd></button><button className="icon-button" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>{theme === 'dark' ? <Sun /> : <Moon />}</button><div className="avatar">ME</div></div></header>
+      <div className="main-shell"><header className="topbar"><button className="icon-button mobile-only" onClick={() => setSidebarOpen(true)}><Menu /></button><div className="topbar-title"><span>{view === 'dashboard' ? 'Good to see you' : 'Interview workspace'}</span><strong>{view === 'dashboard' ? 'Ready to sharpen your answers?' : modules.find((item) => item.id === selectedModule)?.label}</strong></div><div className="topbar-actions"><button className="quick-search" onClick={() => { setView('library'); setTimeout(() => document.querySelector('.search-box input')?.focus(), 50); }}><Search /><span>Quick search</span><kbd>/</kbd></button><div className="avatar">ME</div></div></header>
         <main ref={searchRef}>{view === 'dashboard' && <Dashboard topics={topics} data={data} setView={setView} setSelectedModule={setSelectedModule} startFocus={startFocus} />}{view === 'library' && <Library topics={topics} data={data} update={update} selectedModule={selectedModule} setSelectedModule={setSelectedModule} search={search} setSearch={setSearch} openTopic={setReaderTopic} />}{view === 'focus' && <div className="page focus-launch"><div className="launch-visual"><Brain /></div><span className="eyebrow">Active recall</span><h1>Practise answers, not recognition.</h1><p>Try to explain each topic before revealing the guide. Then rate yourself to schedule the next review.</p><button className="primary" onClick={() => startFocus(topics.filter((topic) => !data.reviews[topic.id] || data.reviews[topic.id].next <= Date.now()))}><Play fill="currentColor" /> Begin focused review</button></div>}{view === 'bookmarks' && <BookmarksView topics={topics} data={data} openTopic={setReaderTopic} />}</main>
       </div>
     </div>
