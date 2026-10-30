@@ -87,6 +87,7 @@ function Sidebar({ view, setView, selectedModule, setSelectedModule, topics, dat
         })}
       </div>
       <div className="sidebar-streak"><Flame size={22} /><div><strong>{data.activeDates.length} study days</strong><span>Keep the momentum going</span></div></div>
+      <div className="sidebar-credit"><span>Made by</span><strong>Rinkute</strong></div>
     </aside>
   );
 }
