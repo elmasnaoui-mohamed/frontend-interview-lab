@@ -1,0 +1,621 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Senior Frontend Interview Guide — JavaScript & Browser</title>
+  <style>
+    :root {
+      --bg:#f6f3ed; --paper:#fffdf8; --ink:#17211d; --muted:#66716c; --line:#ddd8cd;
+      --brand:#0c6b58; --brand2:#08483c; --soft:#e8f3ef; --warm:#f5e5cc; --code:#12201b;
+      --shadow:0 12px 40px rgba(27,45,38,.08); --radius:18px;
+    }
+    *{box-sizing:border-box} html{scroll-behavior:smooth;scroll-padding-top:88px}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.62}
+    a{color:inherit}.topbar{position:sticky;top:0;z-index:20;background:rgba(246,243,237,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+    .topbar-inner{max-width:1240px;margin:auto;padding:12px 24px;display:flex;gap:12px;align-items:center}
+    .brand{font-weight:800;letter-spacing:-.02em;white-space:nowrap}.brand span{color:var(--brand)}
+    .search{flex:1;max-width:560px;margin-left:auto;padding:10px 14px;border:1px solid var(--line);border-radius:999px;background:var(--paper);color:var(--ink);font:inherit}
+    button{border:1px solid var(--line);border-radius:999px;background:var(--paper);padding:10px 14px;font-weight:700;color:var(--ink);cursor:pointer}
+    .layout{max-width:1240px;margin:auto;display:grid;grid-template-columns:250px minmax(0,1fr);gap:30px;padding:34px 24px 80px}
+    aside{position:sticky;top:84px;height:calc(100vh - 104px);overflow:auto;padding-right:8px}
+    aside h2{font-size:.78rem;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin:10px 0}
+    nav a{display:block;text-decoration:none;padding:7px 10px;border-radius:9px;color:var(--muted);font-size:.9rem}
+    nav a:hover{background:var(--soft);color:var(--brand2)}
+    main{min-width:0}.hero{padding:48px;background:linear-gradient(135deg,var(--brand2),#0c6b58);color:white;border-radius:26px;box-shadow:var(--shadow);overflow:hidden;position:relative}
+    .hero:after{content:"JS";position:absolute;right:-20px;bottom:-90px;font-size:240px;font-weight:900;opacity:.07;line-height:1}
+    .eyebrow{font-size:.8rem;text-transform:uppercase;letter-spacing:.16em;font-weight:800;opacity:.75}.hero h1{font-size:clamp(2.2rem,6vw,4.2rem);line-height:.98;letter-spacing:-.055em;margin:16px 0 22px;max-width:800px}
+    .hero p{max-width:720px;font-size:1.08rem;opacity:.9}.legend{display:flex;flex-wrap:wrap;gap:9px;margin-top:24px}.pill{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:6px 10px;font-size:.82rem}
+    .how{margin:22px 0 44px;padding:22px 24px;border:1px solid var(--line);border-radius:var(--radius);background:var(--paper)}
+    .how strong{color:var(--brand2)}.section-title{margin:54px 0 18px}.section-title h2{font-size:2rem;letter-spacing:-.035em;margin:0}.section-title p{margin:5px 0;color:var(--muted)}
+    article{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:30px;margin:0 0 22px;box-shadow:0 4px 18px rgba(27,45,38,.035)}
+    article h3{font-size:1.48rem;letter-spacing:-.025em;margin:0 0 18px;display:flex;gap:10px;align-items:baseline}.num{font-size:.8rem;color:var(--brand);font-weight:900;letter-spacing:.08em}
+    .answer{background:var(--soft);border-left:4px solid var(--brand);padding:18px 20px;border-radius:0 12px 12px 0;margin:0 0 22px;font-size:1.03rem}
+    .answer:before{content:"SAY THIS";display:block;color:var(--brand2);font-size:.7rem;letter-spacing:.14em;font-weight:900;margin-bottom:7px}
+    .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:24px}.block h4{font-size:.76rem;text-transform:uppercase;letter-spacing:.12em;color:var(--brand);margin:0 0 8px}.block p{margin:0 0 14px}
+    pre{margin:12px 0 18px;background:var(--code);color:#e7f5ef;border-radius:13px;padding:18px;overflow:auto;font:13px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre}
+    code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}.trap{background:#fff6e9;border:1px solid #ead7b9;border-radius:12px;padding:14px 16px}.trap h4{color:#8a5310}
+    ul{padding-left:20px;margin:8px 0 16px}li{margin:5px 0}.follow{border-top:1px solid var(--line);padding-top:16px;margin-top:20px}.follow h4{margin:0 0 7px;font-size:.76rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+    .checklist{background:var(--brand2);color:white;border-radius:24px;padding:36px;margin-top:52px}.checklist h2{margin-top:0;font-size:2rem}.checks{columns:2;column-gap:32px}.check{break-inside:avoid;margin:0 0 10px}.check input{margin-right:8px;accent-color:#7ee0c4}
+    .no-results{display:none;padding:30px;text-align:center;color:var(--muted)}.footer{text-align:center;color:var(--muted);font-size:.85rem;padding:28px}
+    mark{background:#ffdc73;color:inherit;border-radius:3px}.kbd{font-family:ui-monospace,monospace;border:1px solid var(--line);border-bottom-width:2px;padding:1px 5px;border-radius:5px;background:var(--paper)}
+    @media(max-width:850px){.layout{display:block}.layout aside{display:none}.hero{padding:34px 26px}.grid{grid-template-columns:1fr}.checks{columns:1}.topbar-inner{padding:10px 14px}.brand{display:none}article{padding:23px}.search{min-width:0}}
+    @media print{.topbar,aside,.how,.footer{display:none}.layout{display:block;max-width:none;padding:0}.hero{box-shadow:none;break-after:page}.hero:after{display:none}article{box-shadow:none;break-inside:avoid}.checklist{background:white;color:black;border:1px solid #999}.section-title{break-after:avoid}body{background:white;font-size:10pt}}
+  </style>
+</head>
+<body>
+  <header class="topbar"><div class="topbar-inner"><div class="brand">Frontend <span>Interview Guide</span></div><input id="search" class="search" type="search" placeholder="Search topics, traps, examples…" aria-label="Search the guide"><button id="print">Print / PDF</button></div></header>
+  <div class="layout">
+    <aside><h2>Quick navigation</h2><nav id="nav"></nav></aside>
+    <main>
+      <section class="hero">
+        <div class="eyebrow">Senior frontend • 6+ years</div>
+        <h1>JavaScript & Browser Interview Guide</h1>
+        <p>Clear answers you can actually say out loud. Each topic moves from a short interview response to the reasoning, a practical example, the traps, and likely follow-up questions.</p>
+        <div class="legend"><span class="pill">31 core topics</span><span class="pill">Natural English</span><span class="pill">Practical code</span><span class="pill">Senior-level trade-offs</span></div>
+      </section>
+      <div class="how"><strong>How to practise:</strong> Read only the green “Say this” box, close the guide, and explain the idea again in your own words. Then use the example and traps to handle follow-up questions. Aim for 30–60 seconds per first answer.</div>
+
+      <div class="section-title" data-section="JavaScript foundations"><h2>JavaScript foundations</h2><p>The language mechanics behind most frontend follow-ups.</p></div>
+
+      <article id="scope" data-title="Scope and lexical scope">
+        <h3><span class="num">01</span> Scope and lexical scope</h3>
+        <div class="answer">Scope controls where a variable can be accessed. JavaScript has global, function, and block scope. It uses lexical scope, so a function can access variables based on where the function was written, not where it is called.</div>
+        <div class="grid"><div class="block"><h4>Easy explanation</h4><p>Think of nested rooms. Code in an inner room can see names in outer rooms, but outer rooms cannot see names declared only inside. The room layout is decided when the code is written.</p>
+<pre>const appName = 'Shop';
+
+function checkout() {
+  const currency = 'EUR';
+  if (true) {
+    const total = 40; // block scoped
+    console.log(appName, currency, total);
+  }
+  // console.log(total); // ReferenceError
+}</pre></div>
+        <div class="block"><div class="trap"><h4>Common traps</h4><ul><li>Confusing scope with the value of <code>this</code>.</li><li>Assuming <code>var</code> is block scoped—it is function scoped.</li><li>Accidentally creating globals in old non-strict code.</li></ul></div></div></div>
+        <div class="follow"><h4>Likely follow-ups</h4>What is a scope chain? What is the temporal dead zone? How is module scope different from global scope?</div>
+      </article>
+
+      <article id="closures" data-title="Closures">
+        <h3><span class="num">02</span> Closures</h3>
+        <div class="answer">A closure is a function together with access to the lexical environment where it was created. That means it can still use outer variables even after the outer function has finished. I use closures for private state, callbacks, and function factories.</div>
+        <div class="grid"><div class="block"><h4>Easy explanation</h4><p>The inner function keeps a “backpack” containing the outer variables it needs.</p>
+<pre>function createCounter() {
+  let count = 0;
+  return () =&gt; ++count;
+}
+
+const next = createCounter();
+next(); // 1
+next(); // 2</pre><p>The returned function keeps access to <code>count</code>. Each call to <code>createCounter</code> creates a separate private environment.</p></div>
+        <div class="block"><div class="trap"><h4>Common traps</h4><ul><li>Closures capture bindings, not frozen copies of values.</li><li>A long-lived listener can retain large objects through a closure.</li><li><code>var</code> in loops gives callbacks one shared binding; use <code>let</code>.</li></ul></div></div></div>
+        <div class="follow"><h4>Likely follow-ups</h4>How can a closure cause a memory leak? How would you implement private state? Why does <code>let</code> fix loop callbacks?</div>
+      </article>
+
+      <article id="hoisting" data-title="Hoisting and temporal dead zone">
+        <h3><span class="num">03</span> Hoisting and the temporal dead zone</h3>
+        <div class="answer">Hoisting is a useful mental model: declarations are processed before execution. Function declarations are callable before their line. A <code>var</code> exists from the start of its function and initially contains <code>undefined</code>. <code>let</code> and <code>const</code> also exist before their declaration, but accessing them in that period—the temporal dead zone—throws an error.</div>
+        <div class="grid"><div class="block"><h4>Example</h4><pre>sayHi();             // works
+function sayHi() {}
+
+console.log(a);      // undefined
+var a = 1;
+
+console.log(b);      // ReferenceError
+let b = 2;</pre><p>The engine does not literally move source code. It creates bindings during environment setup, then executes statements.</p></div><div class="block"><div class="trap"><h4>Common traps</h4><ul><li>Saying <code>let</code> and <code>const</code> are “not hoisted.”</li><li>Confusing function declarations with function expressions.</li><li>Using pre-declaration access as a coding style even when it works.</li></ul></div></div></div>
+        <div class="follow"><h4>Likely follow-ups</h4>Why does the TDZ exist? Are classes hoisted? What happens with function expressions?</div>
+      </article>
+
+      <article id="var-let-const" data-title="var let const">
+        <h3><span class="num">04</span> <code>var</code>, <code>let</code>, and <code>const</code></h3>
+        <div class="answer"><code>var</code> is function scoped, can be redeclared, and is initialized to <code>undefined</code>, so I avoid it in modern code. <code>let</code> and <code>const</code> are block scoped and have a temporal dead zone. I use <code>const</code> by default and <code>let</code> only when the binding must be reassigned.</div>
+        <div class="grid"><div class="block"><h4>Example</h4><pre>const user = { name: 'Mina' };
+user.name = 'Sara';      // valid: object can mutate
+// user = {};            // invalid: binding cannot change
+
+for (let i = 0; i &lt; 3; i++) {
+  setTimeout(() =&gt; console.log(i)); // 0, 1, 2
+}</pre></div><div class="block"><div class="trap"><h4>Common traps</h4><ul><li><code>const</code> does not make an object immutable.</li><li><code>var</code> loop callbacks share one binding.</li><li>Choosing <code>let</code> “just in case” hides reassignment intent.</li></ul></div></div></div>
+        <div class="follow"><h4>Likely follow-ups</h4>Can a <code>const</code> array change? How do top-level declarations behave in scripts versus modules?</div>
+      </article>
+
+      <article id="this" data-title="this and arrow functions">
+        <h3><span class="num">05</span> <code>this</code></h3>
+        <div class="answer">For a normal function, <code>this</code> is mainly determined by how the function is called: as a method, with <code>new</code>, with <code>call/apply/bind</code>, or as a plain function. Arrow functions do not create their own <code>this</code>; they capture it lexically from the surrounding code.</div>
+        <div class="grid"><div class="block"><h4>Example</h4><pre>const user = {
+  name: 'Ava',
+  normal() { return this.name; },
+  delayed() {
+    setTimeout(() =&gt; console.log(this.name), 0);
+  }
+};
+
+user.normal(); // 'Ava'
+const fn = user.normal;
+fn();          // undefined in strict mode</pre><p>Calling <code>fn()</code> loses the object receiver. The arrow callback in <code>delayed</code> keeps the method’s <code>this</code>.</p></div><div class="block"><div class="trap"><h4>Common traps</h4><ul><li>Thinking <code>this</code> means “the object where the function was defined.”</li><li>Using an arrow as an object method when a dynamic receiver is needed.</li><li>Forgetting DOM listeners normally set <code>this</code> to the element for non-arrow callbacks.</li></ul></div></div></div>
+        <div class="follow"><h4>Likely follow-ups</h4>What is <code>this</code> in strict mode? What does <code>new</code> do? Why can’t arrow functions be constructors?</div>
+      </article>
+
+      <article id="call-apply-bind" data-title="call apply bind">
+        <h3><span class="num">06</span> <code>call</code>, <code>apply</code>, and <code>bind</code></h3>
+        <div class="answer">All three let me control <code>this</code> for a normal function. <code>call</code> invokes immediately with separate arguments, <code>apply</code> invokes immediately with an array-like list, and <code>bind</code> returns a new function for later. <code>bind</code> can also pre-fill arguments.</div>
+        <div class="grid"><div class="block"><h4>Example</h4><pre>function greet(greeting, punctuation) {
+  return `${greeting}, ${this.name}${punctuation}`;
+}
+const person = { name: 'Noor' };
+
+greet.call(person, 'Hi', '!');
+greet.apply(person, ['Hi', '!']);
+const sayHi = greet.bind(person, 'Hi');
+sayHi('!');</pre></div><div class="block"><div class="trap"><h4>Common traps</h4><ul><li>Trying to change an arrow function’s lexical <code>this</code>.</li><li>Creating a new bound function when removing a listener; the reference will not match.</li><li>Overusing <code>apply</code>; spread syntax is often clearer for arguments.</li></ul></div></div></div>
+        <div class="follow"><h4>Likely follow-ups</h4>How would you implement a simple <code>bind</code>? What happens if a bound function is used with <code>new</code>?</div>
+      </article>
+
+      <article id="prototypes" data-title="Prototypes and classes">
+        <h3><span class="num">07</span> Prototypes and classes</h3>
+        <div class="answer">JavaScript uses prototype-based inheritance. If a property is not found on an object, the engine follows its prototype chain until it finds the property or reaches <code>null</code>. Class syntax is a cleaner way to define constructor functions and prototype methods; it does not replace the prototype model.</div>
+        <div class="grid"><div class="block"><h4>Example</h4><pre>class User {
+  constructor(name) { this.name = name; }
+  greet() { return `Hi ${this.name}`; }
+}
+
+const u = new User('Lina');
+Object.getPrototypeOf(u) === User.prototype; // true
+u.hasOwnProperty('name');                    // true
+u.hasOwnProperty('greet');                   // false</pre><p>Methods live on <code>User.prototype</code>, so instances share one function instead of receiving a copy.</p></div><div class="block"><div class="trap"><h4>Common traps</h4><ul><li>Confusing an object’s <code>prototype</code> with a constructor’s <code>.prototype</code> property.</li><li>Mutating built-in prototypes.</li><li>Using inheritance where composition is simpler.</li></ul></div></div></div>
+        <div class="follow"><h4>Likely follow-ups</h4>What does <code>new</code> do step by step? How does <code>instanceof</code> work? What is <code>Object.create</code>?</div>
+      </article>
+
+      <article id="equality" data-title="Equality coercion and Object.is">
+        <h3><span class="num">08</span> Equality and coercion</h3>
+        <div class="answer">I normally use strict equality, <code>===</code>, because it compares without type coercion. Loose equality, <code>==</code>, applies conversion rules that can be surprising. Objects compare by reference, not by contents. <code>Object.is</code> is similar to strict equality but treats <code>NaN</code> as equal to itself and distinguishes positive and negative zero.</div>
+        <div class="grid"><div class="block"><h4>Example</h4><pre>0 == false;          // true
+0 === false;         // false
+[] === [];           // false: different references
+NaN === NaN;         // false
+Object.is(NaN, NaN); // true
+
+// One intentional loose-equality idiom:
+value == null;       // true only for null or undefined</pre></div><div class="block"><div class="trap"><h4>Common traps</h4><ul><li>Deep-comparing objects with <code>===</code>.</li><li>Forgetting that <code>NaN</code> is not equal to itself.</li><li>Saying loose equality is random; it follows defined rules, but readability suffers.</li></ul></div></div></div>
+        <div class="follow"><h4>Likely follow-ups</h4>What values are falsy? Why is <code>typeof null</code> “object”? When would loose equality be acceptable?</div>
+      </article>
+
+      <article id="copy" data-title="Shallow copy deep copy structuredClone">
+        <h3><span class="num">09</span> Shallow vs deep copy</h3>
+        <div class="answer">A shallow copy creates a new top-level object but keeps references to nested objects. Spread syntax and <code>Object.assign</code> are shallow. A deep copy recursively duplicates the value graph. In the browser I prefer <code>structuredClone</code> for supported data types, but I first ask whether a full deep copy is really needed.</div>
+        <div class="grid"><div class="block"><h4>Example</h4><pre>const original = { profile: { city: 'Rabat' } };
+const shallow = { ...original };
+shallow.profile.city = 'Casa';
+console.log(original.profile.city); // 'Casa'
+
+const deep = structuredClone(original);
+deep.profile.city = 'Agadir';       // original unchanged</pre><p><code>structuredClone</code> handles cycles, Maps, Sets, Dates, and typed arrays, but it cannot clone functions or DOM nodes.</p></div><div class="block"><div class="trap"><h4>Common traps</h4><ul><li>Calling spread syntax a deep clone.</li><li>Using JSON stringify/parse: it loses types and fails on cycles.</li><li>Cloning huge state trees when structural sharing would be cheaper.</li></ul></div></div></div>
+        <div class="follow"><h4>Likely follow-ups</h4>What can <code>structuredClone</code> copy? What is structural sharing? How would you update one nested field?</div>
+      </article>
+
+      <article id="immutability" data-title="Immutability structural sharing">
+        <h3><span class="num">10</span> Immutability</h3>
+        <div class="answer">Immutability means producing a new value instead of changing an existing one. In UI state it makes changes predictable, supports cheap reference checks, and helps debugging. I do not treat it as a universal rule: local mutation inside a controlled function can be simpler and faster, as long as shared state is not mutated unexpectedly.</div>
+        <div class="grid"><div class="block"><h4>Example</h4><pre>const state = {
+  user: { name: 'Sam', preferences: { theme: 'light' } }
+};
+
+const next = {
+  ...state,
+  user: {
+    ...state.user,
+    preferences: { ...state.user.preferences, theme: 'dark' }
+  }
+};</pre><p>Only the changed path gets new objects; unchanged branches can keep their references. This is structural sharing.</p></div><div class="block"><div class="trap"><h4>Common traps</h4><ul><li>Shallow-copying the root, then mutating a nested object.</li><li>Deep-cloning everything and creating unnecessary CPU and memory cost.</li><li>Assuming <code>Object.freeze</code> is recursive—it is shallow.</li></ul></div></div></div>
+        <div class="follow"><h4>Likely follow-ups</h4>Why does React benefit from immutability? What is structural sharing? When is mutation acceptable?</div>
+      </article>
+
+      <div class="section-title" data-section="Async JavaScript and architecture"><h2>Async JavaScript & architecture</h2><p>How work is scheduled, composed, limited, and packaged.</p></div>
+
+      <article id="promises" data-title="Promises states chaining error handling">
+        <h3><span class="num">11</span> Promises</h3>
+        <div class="answer">A Promise represents the eventual result of an asynchronous operation. It starts pending and settles once as fulfilled or rejected. <code>then</code>, <code>catch</code>, and <code>finally</code> return new promises, so I can compose work and centralize error handling instead of nesting callbacks.</div>
+        <div class="grid"><div class="block"><h4>Example</h4><pre>fetch('/api/user')
+  .then(response =&gt; {
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return response.json();
+  })
+  .then(user =&gt; render(user))
+  .catch(error =&gt; showError(error))
+  .finally(() =&gt; hideSpinner());</pre><p>A handler may return a plain value or another promise. The next link waits and adopts that result.</p></div><div class="block"><div class="trap"><h4>Common traps</h4><ul><li>Forgetting to return a promise inside <code>then</code>.</li><li>Assuming <code>fetch</code> rejects for HTTP 404 or 500—it normally does not.</li><li>Mixing callbacks and promises into hard-to-follow control flow.</li></ul></div></div></div>
+        <div class="follow"><h4>Likely follow-ups</h4>What is promise chaining? How do rejections propagate? Can a settled promise change state?</div>
+      </article>
+
+      <article id="async-await" data-title="async await concurrency cancellation">
+        <h3><span class="num">12</span> <code>async</code>/<code>await</code></h3>
+        <div class="answer"><code>async</code>/<code>await</code> is syntax over promises that makes asynchronous control flow read more like synchronous code. An async function always returns a promise. <code>await</code> pauses that function, not the JavaScript thread, and resumes it in a microtask when the value settles.</div>
+        <div class="grid"><div class="block"><h4>Example: sequential vs concurrent</h4><pre>// Sequential: second starts after first finishes
+const user = await getUser();
+const posts = await getPosts();
+
+// Concurrent: both start immediately
+const [user, posts] = await Promise.all([
+  getUser(), getPosts()
+]);
+
+try {
+  const data = await loadData({ signal });
+} catch (error) {
+  if (error.name !== 'AbortError') report(error);
+}</pre></div><div class="block"><div class="trap"><h4>Common traps</h4><ul><li>Serializing independent calls with back-to-back <code>await</code>.</li><li>Using <code>forEach(async ...)</code>; it does not await callbacks.</li><li>Assuming a promise can be cancelled; cancellation must be designed, often with <code>AbortController</code>.</li></ul></div></div></div>
+        <div class="follow"><h4>Likely follow-ups</h4>How do you run tasks concurrently? How do you handle partial failure? How would you limit concurrency?</div>
+      </article>
+
+      <article id="event-loop" data-title="Event loop microtasks macrotasks rendering">
+        <h3><span class="num">13</span> Event loop, microtasks, and tasks</h3>
+        <div class="answer">JavaScript runs one call stack per main thread. The browser handles timers, network events, and user input outside that stack and queues callbacks. After the current task finishes, the browser drains the microtask queue—promise handlers and <code>queueMicrotask</code>—before it may render and take the next task, such as a timer or click.</div>
+        <div class="grid"><div class="block"><h4>Predict the output</h4><pre>console.log('A');
+
+setTimeout(() =&gt; console.log('B'), 0);
+Promise.resolve().then(() =&gt; console.log('C'));
+queueMicrotask(() =&gt; console.log('D'));
+
+console.log('E');
+// A, E, C, D, B</pre><p>The current script is one task. Microtasks run in registration order after it completes. The timer is a later task.</p></div><div class="block"><div class="trap"><h4>Common traps</h4><ul><li>Saying <code>setTimeout(..., 0)</code> runs immediately.</li><li>Calling every task a “macrotask”; the HTML spec generally says task.</li><li>Creating an endless microtask chain that starves rendering and input.</li></ul></div></div></div>
+        <div class="follow"><h4>Likely follow-ups</h4>Where does rendering happen? What does <code>requestAnimationFrame</code> do? Can microtasks starve the page?</div>
+      </article>
+
+      <article id="promise-all" data-title="Promise all allSettled race any">
+        <h3><span class="num">14</span> <code>Promise.all</code> and combinators</h3>
+        <div class="answer"><code>Promise.all</code> runs independent operations concurrently and fulfills with ordered results when all fulfill. It rejects as soon as one input rejects, although the other operations keep running. For partial success I use <code>allSettled</code>; for the first settled result, <code>race</code>; and for the first fulfilled result, <code>any</code>.</div>
+        <div class="grid"><div class="block"><h4>Example</h4><pre>const [profile, permissions] = await Promise.all([
+  fetchProfile(),
+  fetchPermissions()
+]);
+
+const results = await Promise.allSettled(urls.map(fetchJson));
+const successful = results
+  .filter(r =&gt; r.status === 'fulfilled')
+  .map(r =&gt; r.value);</pre><p>“Fail fast” does not mean cancellation. Use abort signals if the remaining work should be stopped.</p></div><div class="block"><div class="trap"><h4>Common traps</h4><ul><li>Thinking <code>Promise.all</code> itself starts promises; operations usually start when created.</li><li>Passing functions instead of calling them.</li><li>Launching thousands of requests without a concurrency limit.</li></ul></div></div></div>
+        <div class="follow"><h4>Likely follow-ups</h4>Does result order follow completion order? How would you add a timeout? How would you limit to five requests at once?</div>
+      </article>
+
+      <article id="debounce-throttle" data-title="Debounce throttle performance">
+        <h3><span class="num">15</span> Debounce and throttle</h3>
+        <div class="answer">Debounce waits until calls stop for a period, so it is useful for search input or validation. Throttle limits execution to at most once per interval, so it suits scroll, resize, or pointer updates. The production choice also needs leading/trailing behavior, cancellation, argument handling, and cleanup.</div>
+        <div class="grid"><div class="block"><h4>Simple implementations</h4><pre>function debounce(fn, delay) {
+  let timer;
+  return function (...args) {
+    clearTimeout(timer);
+    timer = setTimeout(() =&gt; fn.apply(this, args), delay);
+  };
+}
+
+function throttle(fn, interval) {
+  let last = 0;
+  return function (...args) {
+    const now = Date.now();
+    if (now - last &gt;= interval) {
+      last = now;
+      fn.apply(this, args);
+    }
+  };
+}</pre></div><div class="block"><div class="trap"><h4>Common traps</h4><ul><li>Recreating the wrapped function on every render.</li><li>Not clearing timers when a component unmounts.</li><li>Ignoring the final call in a naive throttle.</li><li>Using a timer for visual animation where <code>requestAnimationFrame</code> fits better.</li></ul></div></div></div>
+        <div class="follow"><h4>Likely follow-ups</h4>What are leading and trailing calls? How do you add <code>cancel</code>/<code>flush</code>? Which would you use for autocomplete?</div>
+      </article>
+
+      <article id="modules" data-title="ES modules CommonJS dynamic import tree shaking">
+        <h3><span class="num">16</span> Modules</h3>
+        <div class="answer">ES modules use static <code>import</code> and <code>export</code>, have their own scope, run in strict mode, and let bundlers analyze dependencies for tree-shaking. Dynamic <code>import()</code> loads code on demand and returns a promise. In browsers, modules are deferred by default and imported bindings are live, read-only views.</div>
+        <div class="grid"><div class="block"><h4>Example</h4><pre>// math.js
+export const add = (a, b) =&gt; a + b;
+
+// app.js
+import { add } from './math.js';
+
+button.addEventListener('click', async () =&gt; {
+  const { openEditor } = await import('./editor.js');
+  openEditor();
+});</pre><p>Dynamic import is a common route- or feature-level code-splitting boundary.</p></div><div class="block"><div class="trap"><h4>Common traps</h4><ul><li>Assuming tree-shaking can always remove code with side effects.</li><li>Creating circular dependencies that read an uninitialized binding.</li><li>Confusing ESM’s live bindings with copied values.</li></ul></div></div></div>
+        <div class="follow"><h4>Likely follow-ups</h4>ESM vs CommonJS? What enables tree-shaking? What are circular dependency risks?</div>
+      </article>
+
+      <article id="errors" data-title="Errors try catch custom errors observability">
+        <h3><span class="num">17</span> Error handling</h3>
+        <div class="answer">I handle errors at the level that can add context, recover, retry, or show the right UI. I throw <code>Error</code> objects, preserve the original cause, distinguish expected domain errors from programmer bugs, and avoid swallowing failures. At application boundaries I log useful context without exposing secrets.</div>
+        <div class="grid"><div class="block"><h4>Example</h4><pre>class ApiError extends Error {
+  constructor(message, { status, cause } = {}) {
+    super(message, { cause });
+    this.name = 'ApiError';
+    this.status = status;
+  }
+}
+
+try {
+  return await saveOrder(order);
+} catch (error) {
+  throw new ApiError('Could not save order', { cause: error });
+}</pre><p><code>try/catch</code> catches synchronous throws and rejected promises that are awaited inside the block.</p></div><div class="block"><div class="trap"><h4>Common traps</h4><ul><li><code>catch {}</code> silently hides production failures.</li><li>Throwing strings loses standard stack and metadata behavior.</li><li>Retrying non-idempotent operations or permanent 4xx failures blindly.</li></ul></div></div></div>
+        <div class="follow"><h4>Likely follow-ups</h4>What can an error boundary catch? When should you retry? How do global unhandled rejection handlers fit in?</div>
+      </article>
+
+      <article id="memory" data-title="Memory leaks garbage collection listeners timers closures">
+        <h3><span class="num">18</span> Memory leaks</h3>
+        <div class="answer">A memory leak happens when the app keeps references to data it no longer needs, so garbage collection cannot reclaim it. In frontend apps I look for unremoved listeners, timers, subscriptions, detached DOM nodes, unbounded caches, and closures retaining large graphs. I verify with heap snapshots and allocation timelines instead of guessing.</div>
+        <div class="grid"><div class="block"><h4>Example and cleanup</h4><pre>const controller = new AbortController();
+
+window.addEventListener('resize', onResize, {
+  signal: controller.signal
+});
+const timer = setInterval(refresh, 30_000);
+
+function cleanup() {
+  controller.abort(); // removes listener
+  clearInterval(timer);
+}</pre><p>WeakMap can associate metadata with objects without keeping the key alive, but it is not a general replacement for explicit cleanup.</p></div><div class="block"><div class="trap"><h4>Common traps</h4><ul><li>Calling high memory use a leak without checking whether it remains reachable.</li><li>Removing a listener with a different function reference.</li><li>Keeping every API response forever in a cache.</li></ul></div></div></div>
+        <div class="follow"><h4>Likely follow-ups</h4>How does garbage collection decide reachability? What are detached DOM nodes? When would you use WeakMap?</div>
+      </article>
+
+      <div class="section-title" data-section="Browser platform and performance"><h2>Browser platform & performance</h2><p>DOM events, pixels, performance, and inclusive interfaces.</p></div>
+
+      <article id="dom" data-title="DOM events delegation capturing bubbling">
+        <h3><span class="num">19</span> DOM and events</h3>
+        <div class="answer">The DOM is the browser’s object model of the document. Event propagation normally has capture, target, and bubble phases. I often use event delegation: one listener on a stable ancestor handles matching descendants. That reduces listeners and works for dynamically added elements.</div>
+        <div class="grid"><div class="block"><h4>Example</h4><pre>const list = document.querySelector('[data-list]');
+
+list.addEventListener('click', event =&gt; {
+  const button = event.target.closest('[data-remove]');
+  if (!button || !list.contains(button)) return;
+  removeItem(button.dataset.remove);
+});</pre><p>Use <code>currentTarget</code> for the element whose listener is running; <code>target</code> is where the event originated.</p></div><div class="block"><div class="trap"><h4>Common traps</h4><ul><li>Confusing <code>target</code> and <code>currentTarget</code>.</li><li>Using <code>stopPropagation</code> broadly and breaking other behavior.</li><li>Repeated layout reads and writes in loops.</li><li>Using non-passive scroll listeners without need.</li></ul></div></div></div>
+        <div class="follow"><h4>Likely follow-ups</h4>Capture vs bubble? Which events do not bubble? What is the difference between DOM attributes and properties?</div>
+      </article>
+
+      <article id="rendering" data-title="Browser rendering pipeline DOM CSSOM render tree layout paint composite">
+        <h3><span class="num">20</span> Browser rendering pipeline</h3>
+        <div class="answer">At a high level, the browser parses HTML into the DOM and CSS into the CSSOM, combines them into a render tree, calculates layout, paints pixels into layers, and composites those layers on screen. JavaScript and style changes can invalidate parts of that work, so I measure and avoid doing expensive work repeatedly in a frame.</div>
+        <div class="grid"><div class="block"><h4>Easy sequence</h4><pre>HTML ──&gt; DOM ─┐
+              ├─&gt; Render tree ─&gt; Layout ─&gt; Paint ─&gt; Composite
+CSS  ──&gt; CSSOM┘</pre><p>Modern engines optimize aggressively, so this is a conceptual model, not a promise that every frame executes every stage. Parsing scripts can block HTML parsing unless loading strategy such as <code>defer</code> or modules is used.</p></div><div class="block"><div class="trap"><h4>Common traps</h4><ul><li>Presenting the pipeline as a rigid full-page sequence for every change.</li><li>Assuming every JavaScript execution blocks all downloads.</li><li>Optimizing from theory without using DevTools performance traces.</li></ul></div></div></div>
+        <div class="follow"><h4>Likely follow-ups</h4>What blocks first render? What do <code>async</code> and <code>defer</code> do? What is the critical rendering path?</div>
+      </article>
+
+      <article id="reflow" data-title="Reflow repaint compositing layout thrashing">
+        <h3><span class="num">21</span> Reflow, repaint, and compositing</h3>
+        <div class="answer">A layout or reflow recalculates geometry. Paint redraws visual pixels such as color or shadow. Compositing combines already-painted layers, often on the compositor thread. For smooth animation I prefer <code>transform</code> and <code>opacity</code> when appropriate, and I batch DOM reads and writes to avoid forced synchronous layout.</div>
+        <div class="grid"><div class="block"><h4>Layout thrashing</h4><pre>// Bad: write then layout read on every iteration
+items.forEach(item =&gt; {
+  item.style.width = '200px';
+  console.log(item.offsetWidth);
+});
+
+// Better: group reads, then writes
+const widths = items.map(item =&gt; item.offsetWidth);
+requestAnimationFrame(() =&gt; {
+  items.forEach((item, i) =&gt; {
+    item.style.transform = `translateX(${widths[i]}px)`;
+  });
+});</pre></div><div class="block"><div class="trap"><h4>Common traps</h4><ul><li>Saying transform is always free; large layers use memory and still need compositing.</li><li>Adding <code>will-change</code> everywhere.</li><li>Mixing geometry reads and style writes repeatedly.</li></ul></div></div></div>
+        <div class="follow"><h4>Likely follow-ups</h4>Which properties trigger layout? What causes forced layout? Why can too many layers hurt?</div>
+      </article>
+
+      <article id="accessibility" data-title="Accessibility semantic HTML keyboard ARIA focus">
+        <h3><span class="num">22</span> Accessibility</h3>
+        <div class="answer">Accessibility means people can perceive, understand, navigate, and operate the interface with different abilities and tools. I start with semantic HTML, keyboard access, visible focus, correct labels, useful headings and landmarks, sufficient contrast, and predictable error messages. I use ARIA only when native HTML cannot express the behavior.</div>
+        <div class="grid"><div class="block"><h4>Example</h4><pre>&lt;label for="email"&gt;Email&lt;/label&gt;
+&lt;input id="email" name="email" type="email"
+       aria-describedby="email-error" required&gt;
+&lt;p id="email-error" role="alert"&gt;&lt;/p&gt;
+
+&lt;button type="button"&gt;Save&lt;/button&gt;
+&lt;!-- not: &lt;div onclick="save()"&gt;Save&lt;/div&gt; --&gt;</pre><p>Testing includes keyboard-only navigation, a screen reader smoke test, zoom, automated checks, and real user feedback where possible.</p></div><div class="block"><div class="trap"><h4>Common traps</h4><ul><li>Using ARIA to repair avoidable non-semantic markup.</li><li>Removing focus outlines without an equivalent.</li><li>Using placeholder text as the only label.</li><li>Assuming automated tools catch all accessibility issues.</li></ul></div></div></div>
+        <div class="follow"><h4>Likely follow-ups</h4>How do you manage focus in a modal? What is an accessible name? When should <code>aria-live</code> be used?</div>
+      </article>
+
+      <article id="web-vitals" data-title="Core Web Vitals LCP INP CLS performance">
+        <h3><span class="num">23</span> Web Vitals</h3>
+        <div class="answer">The core user-centered metrics are LCP for loading, INP for interaction responsiveness, and CLS for visual stability. I use real-user monitoring as the source of truth and lab tools for diagnosis. I improve the actual bottleneck—for example the LCP resource, long main-thread tasks, or elements without reserved space—rather than chasing one score.</div>
+        <div class="grid"><div class="block"><h4>Practical improvements</h4><ul><li><strong>LCP:</strong> optimize and prioritize the hero image, reduce server delay, remove render blockers.</li><li><strong>INP:</strong> shorten event work, split long tasks, reduce unnecessary rendering, avoid heavy synchronous JS.</li><li><strong>CLS:</strong> reserve image/ad dimensions, avoid inserting content above, load fonts carefully.</li></ul><pre>new PerformanceObserver(list =&gt; {
+  for (const entry of list.getEntries()) {
+    sendMetric(entry);
+  }
+}).observe({ type: 'long-animation-frame', buffered: true });</pre></div><div class="block"><div class="trap"><h4>Common traps</h4><ul><li>Using only Lighthouse lab data as proof of real-user experience.</li><li>Confusing FCP with LCP.</li><li>Optimizing averages while ignoring poor p75 experiences and device segments.</li><li>Treating metric improvements as a substitute for usability.</li></ul></div></div></div>
+        <div class="follow"><h4>Likely follow-ups</h4>Field vs lab data? How do you find the LCP element? What causes poor INP? Why measure p75?</div>
+      </article>
+
+      <div class="section-title" data-section="Networking, identity, and security"><h2>Networking, identity & security</h2><p>How the browser communicates, stores trust, and protects users.</p></div>
+
+      <article id="networking" data-title="Networking DNS TCP TLS HTTP request lifecycle">
+        <h3><span class="num">24</span> Networking: from URL to page</h3>
+        <div class="answer">At a high level, the browser resolves the hostname with DNS, establishes a connection—TCP plus TLS for HTTP/1.1 or HTTP/2, or QUIC with TLS for HTTP/3—sends the HTTP request, receives the response, and then parses and renders resources. Caches, service workers, connection reuse, redirects, and proxies can change that path.</div>
+        <div class="grid"><div class="block"><h4>Easy sequence</h4><pre>URL → cache/service worker → DNS → connection + TLS
+    → HTTP request → server/CDN → HTTP response
+    → parse → fetch subresources → render</pre><p>HTTP/2 multiplexes streams over one connection. HTTP/3 uses QUIC over UDP to reduce some transport-level blocking and improve connection setup.</p></div><div class="block"><div class="trap"><h4>Common traps</h4><ul><li>Saying HTTP/2 removes all head-of-line blocking; TCP loss still affects the connection.</li><li>Forgetting connection reuse and browser caches.</li><li>Assuming DNS always means one fresh remote lookup.</li></ul></div></div></div>
+        <div class="follow"><h4>Likely follow-ups</h4>HTTP/2 vs HTTP/3? What happens in a TLS handshake? What is a CDN? What is a service worker’s role?</div>
+      </article>
+
+      <article id="http" data-title="HTTP methods status codes idempotency headers">
+        <h3><span class="num">25</span> HTTP</h3>
+        <div class="answer">HTTP is a stateless request-response protocol. A request has a method, URL, headers, and optional body; a response has a status, headers, and optional body. I choose methods by semantics—GET reads, POST commonly creates or triggers work, PUT replaces, PATCH partially updates, and DELETE removes—and I design retries around idempotency.</div>
+        <div class="grid"><div class="block"><h4>Useful status groups</h4><ul><li><strong>2xx:</strong> success—200 OK, 201 Created, 204 No Content.</li><li><strong>3xx:</strong> redirection or cache—301/308 permanent, 302/307 temporary, 304 Not Modified.</li><li><strong>4xx:</strong> client-side condition—400, 401 unauthenticated, 403 forbidden, 404, 409, 429.</li><li><strong>5xx:</strong> server failure—500, 502, 503, 504.</li></ul><pre>const response = await fetch('/api/items/42', {
+  method: 'PATCH',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ archived: true })
+});</pre></div><div class="block"><div class="trap"><h4>Common traps</h4><ul><li>Saying 401 means “not authorized”; it usually means authentication is required or invalid.</li><li>Retrying POST without idempotency protection.</li><li>Putting secrets in query strings and logs.</li></ul></div></div></div>
+        <div class="follow"><h4>Likely follow-ups</h4>PUT vs PATCH? Safe vs idempotent methods? 401 vs 403? What does content negotiation mean?</div>
+      </article>
+
+      <article id="caching" data-title="HTTP caching cache control ETag service worker">
+        <h3><span class="num">26</span> HTTP caching</h3>
+        <div class="answer">HTTP caching avoids unnecessary transfers. <code>Cache-Control</code> defines freshness and storage rules. While a response is fresh, it can be reused directly; when stale, validators such as <code>ETag</code> or <code>Last-Modified</code> allow revalidation and a 304 response. For versioned static assets I use long immutable caching; HTML usually needs a shorter or revalidated policy.</div>
+        <div class="grid"><div class="block"><h4>Typical policies</h4><pre># Fingerprinted asset: app.a1b2c3.js
+Cache-Control: public, max-age=31536000, immutable
+
+# HTML that should be checked before reuse
+Cache-Control: no-cache
+ETag: "page-v42"
+
+# Sensitive response: do not store
+Cache-Control: no-store</pre><p><code>no-cache</code> means “revalidate before reuse,” not “do not store.” <code>Vary</code> tells caches which request headers affect the representation.</p></div><div class="block"><div class="trap"><h4>Common traps</h4><ul><li>Confusing <code>no-cache</code> with <code>no-store</code>.</li><li>Caching HTML forever and trapping users on old asset references.</li><li>Forgetting shared-cache privacy and <code>Vary</code>.</li></ul></div></div></div>
+        <div class="follow"><h4>Likely follow-ups</h4>Strong vs weak ETags? Browser cache vs CDN vs service worker cache? How do you invalidate assets?</div>
+      </article>
+
+      <article id="cors" data-title="CORS same origin preflight credentials">
+        <h3><span class="num">27</span> CORS</h3>
+        <div class="answer">CORS is a browser mechanism that lets a server opt into cross-origin reads. The same-origin policy normally blocks frontend JavaScript from reading another origin’s response. For some requests the browser first sends an OPTIONS preflight. CORS is enforced by browsers; it is not authentication and it does not stop direct server-to-server requests.</div>
+        <div class="grid"><div class="block"><h4>Credentialed example</h4><pre>fetch('https://api.example.com/profile', {
+  credentials: 'include'
+});
+
+// Response must use a specific origin, not *, for credentials:
+Access-Control-Allow-Origin: https://app.example.com
+Access-Control-Allow-Credentials: true</pre><p>An origin is the combination of scheme, host, and port. “Simple” requests can skip preflight, but their response still needs the correct CORS headers to be readable.</p></div><div class="block"><div class="trap"><h4>Common traps</h4><ul><li>Trying to fix CORS from client JavaScript.</li><li>Using wildcard origin with credentials.</li><li>Calling CORS a security boundary for the API itself.</li><li>Forgetting that preflight responses need correct headers too.</li></ul></div></div></div>
+        <div class="follow"><h4>Likely follow-ups</h4>What triggers preflight? What is a simple request? CORS vs CSRF? Why can a form still send cross-origin?</div>
+      </article>
+
+      <article id="storage" data-title="Cookies localStorage sessionStorage IndexedDB">
+        <h3><span class="num">28</span> Cookies and browser storage</h3>
+        <div class="answer">Cookies are small values automatically attached to matching HTTP requests, so they suit server sessions but need security attributes. <code>localStorage</code> persists by origin and is synchronous; <code>sessionStorage</code> is scoped to an origin and tab session. IndexedDB is asynchronous and better for larger structured offline data. I choose storage based on lifecycle, size, access pattern, and threat model.</div>
+        <div class="grid"><div class="block"><h4>Secure session cookie</h4><pre>Set-Cookie: session=opaque-value;
+  HttpOnly; Secure; SameSite=Lax; Path=/</pre><ul><li><code>HttpOnly</code>: JavaScript cannot read it.</li><li><code>Secure</code>: send only over HTTPS.</li><li><code>SameSite</code>: limits cross-site sending and helps against CSRF.</li></ul></div><div class="block"><div class="trap"><h4>Common traps</h4><ul><li>Storing sensitive long-lived tokens in <code>localStorage</code> without considering XSS.</li><li>Using synchronous storage in a hot path.</li><li>Assuming HttpOnly cookies eliminate CSRF.</li><li>Storing secrets client-side as if users cannot inspect them.</li></ul></div></div></div>
+        <div class="follow"><h4>Likely follow-ups</h4>Cookie vs localStorage for auth? What does SameSite do? When would you use IndexedDB? What are storage quotas?</div>
+      </article>
+
+      <article id="auth" data-title="Authentication authorization sessions OAuth">
+        <h3><span class="num">29</span> Authentication vs authorization</h3>
+        <div class="answer">Authentication answers “who are you?” and authorization answers “what are you allowed to do?” Authentication might use a password, passkey, or identity provider. After identity is established, the server applies authorization rules for every protected action. Frontend route guards improve UX, but they are never the real security boundary.</div>
+        <div class="grid"><div class="block"><h4>Practical model</h4><pre>Sign in → establish identity → issue session/token
+Request → validate session/token → load policy/roles
+        → authorize this resource and action → allow/deny</pre><p>Role-based access control is convenient, but resource ownership or attribute-based rules are often required. The server must enforce them.</p></div><div class="block"><div class="trap"><h4>Common traps</h4><ul><li>Hiding a button and calling the action secure.</li><li>Confusing OAuth authorization with user authentication; OpenID Connect adds an identity layer.</li><li>Trusting role or price values supplied by the client.</li></ul></div></div></div>
+        <div class="follow"><h4>Likely follow-ups</h4>Sessions vs tokens? OAuth vs OpenID Connect? RBAC vs ABAC? Where should permission checks live?</div>
+      </article>
+
+      <article id="jwt" data-title="JWT access token refresh token rotation flow">
+        <h3><span class="num">30</span> JWT and refresh flow</h3>
+        <div class="answer">A JWT is a signed token format, not an authentication strategy by itself. A common flow uses a short-lived access token for APIs and a longer-lived refresh token to obtain new access tokens. I prefer refresh tokens in Secure, HttpOnly, appropriately SameSite cookies, rotate them on use, detect reuse, and keep access tokens short-lived.</div>
+        <div class="grid"><div class="block"><h4>Refresh flow</h4><pre>1. Sign in successfully
+2. Server returns short-lived access token
+   and sets protected refresh-token cookie
+3. API call receives 401 because access token expired
+4. Client calls /auth/refresh once
+5. Server validates + rotates refresh token
+6. Client retries queued requests with new access token
+7. If refresh fails, clear session and ask user to sign in</pre><p>Coordinate concurrent 401 responses so only one refresh runs. Decode a JWT only to read claims; signature validation and authorization belong on the server.</p></div><div class="block"><div class="trap"><h4>Common traps</h4><ul><li>Assuming encoded JWT payloads are encrypted or secret.</li><li>Putting long-lived tokens in JavaScript-readable storage.</li><li>Creating an infinite 401 → refresh → retry loop.</li><li>Refreshing separately for every concurrent failed request.</li><li>Not planning revocation, rotation, clock skew, or logout.</li></ul></div></div></div>
+        <div class="follow"><h4>Likely follow-ups</h4>JWT vs opaque session? Where do you store tokens? How does refresh-token reuse detection work? What happens across tabs?</div>
+      </article>
+
+      <article id="security" data-title="XSS CSRF CSP frontend security">
+        <h3><span class="num">31</span> XSS, CSRF, and CSP</h3>
+        <div class="answer">XSS lets attacker-controlled code run in the site’s origin, so I prevent it with contextual output encoding, safe DOM APIs, sanitization for allowed HTML, and a restrictive CSP as defense in depth. CSRF tricks a browser into sending an authenticated request, so I use SameSite cookies, CSRF tokens or origin checks, and safe request design. CSP limits which scripts and resources may execute or load.</div>
+        <div class="grid"><div class="block"><h4>Safer patterns</h4><pre>// Safe for plain text
+element.textContent = untrustedValue;
+
+// Dangerous without robust sanitization
+element.innerHTML = untrustedValue;
+
+Content-Security-Policy:
+  default-src 'self';
+  script-src 'self' 'nonce-r4nd0m';
+  object-src 'none'; base-uri 'self';</pre><p>XSS can bypass many CSRF defenses because malicious code runs inside the trusted origin. Framework escaping helps, but unsafe HTML escape hatches still need care.</p></div><div class="block"><div class="trap"><h4>Common traps</h4><ul><li>Treating CSP as the only XSS defense.</li><li>Using regex as an HTML sanitizer.</li><li>Assuming JSON APIs cannot have CSRF risk.</li><li>Allowing <code>'unsafe-inline'</code> and calling the CSP strong.</li><li>Logging tokens or personal data to analytics.</li></ul></div></div></div>
+        <div class="follow"><h4>Likely follow-ups</h4>Stored vs reflected vs DOM XSS? How does a CSRF token work? Nonce vs hash CSP? What is Trusted Types?</div>
+      </article>
+
+      <section class="checklist" id="practice"><h2>Compact practice checklist</h2><p>Check an item only when you can explain it aloud without reading.</p><div class="checks">
+        <label class="check"><input type="checkbox">Explain lexical scope and closure with one example.</label>
+        <label class="check"><input type="checkbox">Compare <code>var</code>, <code>let</code>, and <code>const</code>.</label>
+        <label class="check"><input type="checkbox">Predict <code>this</code> from a call site.</label>
+        <label class="check"><input type="checkbox">Explain prototypes and what <code>new</code> does.</label>
+        <label class="check"><input type="checkbox">Explain strict equality and reference equality.</label>
+        <label class="check"><input type="checkbox">Show why object spread is shallow.</label>
+        <label class="check"><input type="checkbox">Write an immutable nested update.</label>
+        <label class="check"><input type="checkbox">Explain promise chaining and rejection flow.</label>
+        <label class="check"><input type="checkbox">Spot accidental sequential <code>await</code>.</label>
+        <label class="check"><input type="checkbox">Predict task and microtask output.</label>
+        <label class="check"><input type="checkbox">Choose among all, allSettled, race, and any.</label>
+        <label class="check"><input type="checkbox">Implement a basic debounce and throttle.</label>
+        <label class="check"><input type="checkbox">Explain ESM, dynamic import, and tree-shaking.</label>
+        <label class="check"><input type="checkbox">Describe error boundaries and observability.</label>
+        <label class="check"><input type="checkbox">Name five frontend memory leak sources.</label>
+        <label class="check"><input type="checkbox">Explain event delegation and propagation.</label>
+        <label class="check"><input type="checkbox">Walk through the rendering pipeline.</label>
+        <label class="check"><input type="checkbox">Explain layout thrashing and smooth animation.</label>
+        <label class="check"><input type="checkbox">Give an accessibility testing routine.</label>
+        <label class="check"><input type="checkbox">Diagnose likely LCP, INP, and CLS causes.</label>
+        <label class="check"><input type="checkbox">Walk from URL to rendered page.</label>
+        <label class="check"><input type="checkbox">Explain HTTP methods, codes, and idempotency.</label>
+        <label class="check"><input type="checkbox">Design caching for HTML and hashed assets.</label>
+        <label class="check"><input type="checkbox">Explain CORS and preflight without myths.</label>
+        <label class="check"><input type="checkbox">Choose cookies, web storage, or IndexedDB.</label>
+        <label class="check"><input type="checkbox">Separate authentication from authorization.</label>
+        <label class="check"><input type="checkbox">Walk through a safe refresh-token flow.</label>
+        <label class="check"><input type="checkbox">Compare XSS, CSRF, and CSP defenses.</label>
+        <label class="check"><input type="checkbox">Tell one real performance trade-off story.</label>
+        <label class="check"><input type="checkbox">Prepare two “I measured before optimizing” examples.</label>
+      </div></section>
+      <div id="no-results" class="no-results">No matching topics. Try a broader term.</div>
+      <div class="footer">Built as a single offline file. Search with <span class="kbd">Ctrl</span> + <span class="kbd">K</span>, or print to PDF.</div>
+    </main>
+  </div>
+  <script>
+    const nav = document.querySelector('#nav');
+    const sectionNodes = [...document.querySelectorAll('[data-section]')];
+    const articles = [...document.querySelectorAll('article[data-title]')];
+
+    sectionNodes.forEach(section => {
+      const heading = document.createElement('h2');
+      heading.textContent = section.dataset.section;
+      nav.appendChild(heading);
+      let next = section.nextElementSibling;
+      while (next && !next.matches('[data-section], .checklist')) {
+        if (next.matches('article[data-title]')) {
+          const link = document.createElement('a');
+          link.href = `#${next.id}`;
+          link.textContent = next.dataset.title;
+          nav.appendChild(link);
+        }
+        next = next.nextElementSibling;
+      }
+    });
+    const practiceLink = document.createElement('a');
+    practiceLink.href = '#practice';
+    practiceLink.textContent = 'Practice checklist';
+    nav.appendChild(practiceLink);
+
+    const search = document.querySelector('#search');
+    const noResults = document.querySelector('#no-results');
+    function filterGuide() {
+      const query = search.value.trim().toLowerCase();
+      let visible = 0;
+      articles.forEach(article => {
+        const match = !query || article.textContent.toLowerCase().includes(query);
+        article.hidden = !match;
+        if (match) visible++;
+      });
+      sectionNodes.forEach(section => {
+        let next = section.nextElementSibling;
+        let hasVisible = false;
+        while (next && !next.matches('[data-section], .checklist')) {
+          if (next.matches('article[data-title]') && !next.hidden) hasVisible = true;
+          next = next.nextElementSibling;
+        }
+        section.hidden = !hasVisible;
+      });
+      noResults.style.display = visible ? 'none' : 'block';
+    }
+    search.addEventListener('input', filterGuide);
+    document.addEventListener('keydown', event => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault(); search.focus();
+      }
+      if (event.key === 'Escape' && document.activeElement === search) {
+        search.value = ''; filterGuide(); search.blur();
+      }
+    });
+    document.querySelector('#print').addEventListener('click', () => window.print());
+
+    const savedChecks = JSON.parse(localStorage.getItem('frontend-guide-checks') || '{}');
+    document.querySelectorAll('.check input').forEach((box, index) => {
+      box.checked = Boolean(savedChecks[index]);
+      box.addEventListener('change', () => {
+        savedChecks[index] = box.checked;
+        localStorage.setItem('frontend-guide-checks', JSON.stringify(savedChecks));
+      });
+    });
+  </script>
+</body>
+</html>
